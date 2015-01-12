@@ -4,6 +4,13 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import java.text.DecimalFormat;
+
 import android.util.Log;
 import android.os.AsyncTask;
 
@@ -20,11 +27,18 @@ import org.json.JSONObject;
 public class MainActivity extends ActionBarActivity {
 
     private static final String ACTIVITY_TAG = "MaterialWeather";
+    private TextView cond;
+    private TextView temp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        temp = (TextView) findViewById(R.id.temp);
+        cond = (TextView) findViewById(R.id.cond);
+        //String locationProvider = LocationManager.NETWORK_PROVIDER;
+        //Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
 
         WeatherTask task = new WeatherTask();
         String city = "taipei,taiwan";
@@ -39,11 +53,9 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
 
-    private class WeatherTask extends AsyncTask<String, Void, Void> {
+    private class WeatherTask extends AsyncTask<String, Void, String> {
         @Override
-        protected Void doInBackground(String... params) {
-            Log.i(MainActivity.ACTIVITY_TAG, params[0]);
-
+        protected String doInBackground(String... params) {
             HttpURLConnection con = null;
             InputStream is = null;
 
@@ -65,15 +77,7 @@ public class MainActivity extends ActionBarActivity {
                 is.close();
                 con.disconnect();
 
-                JSONObject jObj = new JSONObject(buffer.toString());
-                JSONArray jArr = jObj.getJSONArray("weather");
-                JSONObject weatherData = jArr.getJSONObject(0);
-
-                JSONObject mainObj = jObj.getJSONObject("main");
-                Log.i(MainActivity.ACTIVITY_TAG, weatherData.getString("description"));
-                Log.i(MainActivity.ACTIVITY_TAG, weatherData.getString("main"));
-
-                Log.i(MainActivity.ACTIVITY_TAG, mainObj.getString("temp"));
+                return buffer.toString();
             } 
             catch(Throwable t) {
                 t.printStackTrace();
@@ -83,6 +87,30 @@ public class MainActivity extends ActionBarActivity {
                 try { con.disconnect(); } catch(Throwable t) {}
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            try {
+                JSONObject jObj = new JSONObject(result);
+                JSONArray jArr = jObj.getJSONArray("weather");
+                JSONObject weatherData = jArr.getJSONObject(0);
+
+                JSONObject mainObj = jObj.getJSONObject("main");
+                cond.setText(weatherData.getString("description"));
+                Log.i(MainActivity.ACTIVITY_TAG, weatherData.getString("description"));
+                Log.i(MainActivity.ACTIVITY_TAG, weatherData.getString("main"));
+                Double c = new Double(mainObj.getDouble("temp") - 273.15);
+                DecimalFormat df = new DecimalFormat("#.##");
+                String degree = df.format(c).toString();
+                temp.setText(degree + " °C");
+                Log.i(MainActivity.ACTIVITY_TAG, mainObj.getString("temp"));
+            }
+            catch(Throwable t) {
+                t.printStackTrace();
+            }
         }
     }
 
