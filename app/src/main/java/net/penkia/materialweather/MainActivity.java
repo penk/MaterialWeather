@@ -14,6 +14,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class MainActivity extends ActionBarActivity {
 
     private static final String ACTIVITY_TAG = "MaterialWeather";
@@ -61,7 +64,16 @@ public class MainActivity extends ActionBarActivity {
 
                 is.close();
                 con.disconnect();
-                Log.i(MainActivity.ACTIVITY_TAG, buffer.toString());
+
+                JSONObject jObj = new JSONObject(buffer.toString());
+                JSONArray jArr = jObj.getJSONArray("weather");
+                JSONObject weatherData = jArr.getJSONObject(0);
+
+                JSONObject mainObj = jObj.getJSONObject("main");
+                Log.i(MainActivity.ACTIVITY_TAG, weatherData.getString("description"));
+                Log.i(MainActivity.ACTIVITY_TAG, weatherData.getString("main"));
+
+                Log.i(MainActivity.ACTIVITY_TAG, mainObj.getString("temp"));
             } 
             catch(Throwable t) {
                 t.printStackTrace();
