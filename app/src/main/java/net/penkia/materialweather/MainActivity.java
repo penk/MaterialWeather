@@ -7,7 +7,16 @@ import android.view.MenuItem;
 import android.util.Log;
 import android.os.AsyncTask;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class MainActivity extends ActionBarActivity {
+
+    private static final String ACTIVITY_TAG = "MaterialWeather";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,11 +36,41 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
 
-    private class WeatherTask extends AsyncTask<String, Void, String> {
+    private class WeatherTask extends AsyncTask<String, Void, Void> {
         @Override
-        protected String doInBackground(String... params) {
-            Log.i("doInBackground: ", params[0]);
-            return "works";
+        protected Void doInBackground(String... params) {
+            Log.i(MainActivity.ACTIVITY_TAG, params[0]);
+
+            HttpURLConnection con = null;
+            InputStream is = null;
+
+            try {
+                con = (HttpURLConnection) ( new URL("http://api.openweathermap.org/data/2.5/weather?q=" + params[0])).openConnection();
+                con.setRequestMethod("GET");
+                con.setDoInput(true);
+                con.setDoOutput(true);
+                con.connect();
+
+                StringBuffer buffer = new StringBuffer();
+                is = con.getInputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+                String line = null;
+                while (  (line = br.readLine()) != null )
+                    buffer.append(line + "\r\n");
+
+                is.close();
+                con.disconnect();
+                Log.i(MainActivity.ACTIVITY_TAG, buffer.toString());
+            } 
+            catch(Throwable t) {
+                t.printStackTrace();
+            }
+            finally {
+                try { is.close(); } catch(Throwable t) {}
+                try { con.disconnect(); } catch(Throwable t) {}
+            }
+            return null;
         }
     }
 
