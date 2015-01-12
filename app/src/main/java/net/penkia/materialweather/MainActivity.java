@@ -4,7 +4,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-
+import android.util.Log;
+import android.os.AsyncTask;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -12,6 +13,10 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        WeatherTask task = new WeatherTask();
+        String city = "taipei,taiwan";
+        task.execute(new String[]{city});
     }
 
 
@@ -20,6 +25,14 @@ public class MainActivity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    private class WeatherTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            Log.i("doInBackground: ", params[0]);
+            return "works";
+        }
     }
 
     @Override
