@@ -3,5 +3,9 @@
 
     <string name="app_name">Material Weather</string>
     <string name="action_settings">Settings</string>
-
+    <string name="location_placeholder">Finding location</string>
+    <string name="temp">0</string>
+    <string name="cond">weather conditions</string>
+    <string name="city">city</string>
+    <string name="dialog.city.header">Enter City or Location</string>
 </resources>

@@ -29,12 +29,6 @@
         android:id="@+id/l1"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/cond"
-            android:id="@+id/cond" />
-
     </LinearLayout>
 
     <TextView
@@ -43,13 +37,16 @@
         style="@style/TextAppearance.AppCompat.Display4"
         android:id="@+id/temp"
         android:text="@string/temp"
-        android:layout_alignParentTop="true"
+        android:layout_marginLeft="42dp"
+        android:textSize="60sp"
+        android:layout_marginStart="42dp"
+        android:textStyle="bold"
+        android:paddingTop="15sp"
+        android:layout_above="@+id/city"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="44dp"
-        android:textSize="60sp"
-        android:layout_marginStart="44dp"
-        android:textStyle="bold" />
+        android:layout_marginBottom="17dp" 
+        />
 
     <TextView
         android:layout_width="wrap_content"
@@ -57,9 +54,24 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/city"
         android:id="@+id/city"
-        android:layout_below="@+id/temp"
+        android:paddingStart="5sp"
+        android:layout_alignBottom="@+id/my_toolbar"
         android:layout_alignLeft="@+id/temp"
         android:layout_alignStart="@+id/temp"
+        android:layout_marginBottom="23dp"
+        android:onClick="onClick"
+        android:clickable="true"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cond"
+        android:id="@+id/cond"
+        android:layout_gravity="left"
+        android:layout_centerVertical="true"
+        android:layout_alignLeft="@+id/city"
+        android:layout_alignStart="@+id/city"
         android:paddingStart="5sp" />
 
 
