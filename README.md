@@ -3,12 +3,12 @@ Simple weather app using OpenWeatherMap API
 
 ![screenshot](http://i.imgur.com/9yUxgTu.png)
 
-Download: [MaterialWeather-1.0-debug.apk](https://github.com/penk/MaterialWeather/releases/download/v1.0/MaterialWeather-1.0-debug.apk) (961KB)
+Download: [MaterialWeather-1.1-debug.apk](https://github.com/penk/MaterialWeather/releases/download/v1.1/MaterialWeather-1.1-debug.apk) (0.92MB)
 
 ## Future TODO
 
 - Enable GeoLocation
-- Use SearchView and local JSON city list
+- Use SearchView and local city list
 
 ## LICENSE 
 
