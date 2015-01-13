@@ -2,13 +2,20 @@ package net.penkia.materialweather;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import android.widget.ImageView;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.view.LayoutInflater;
+import android.content.DialogInterface;
+import android.widget.EditText;
+import android.view.KeyEvent;
+import android.widget.TextView.OnEditorActionListener;
+import android.view.View.OnKeyListener;
+
 import android.widget.TextView;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import java.text.DecimalFormat;
 
 import android.util.Log;
@@ -29,6 +36,7 @@ public class MainActivity extends ActionBarActivity {
     private static final String ACTIVITY_TAG = "MaterialWeather";
     private TextView cond;
     private TextView temp;
+    private TextView city;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,14 +45,12 @@ public class MainActivity extends ActionBarActivity {
 
         temp = (TextView) findViewById(R.id.temp);
         cond = (TextView) findViewById(R.id.cond);
-        //String locationProvider = LocationManager.NETWORK_PROVIDER;
-        //Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
+        city = (TextView) findViewById(R.id.city);
 
         WeatherTask task = new WeatherTask();
         String city = "taipei,taiwan";
         task.execute(new String[]{city});
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -96,14 +102,23 @@ public class MainActivity extends ActionBarActivity {
             try {
                 JSONObject jObj = new JSONObject(result);
                 JSONArray jArr = jObj.getJSONArray("weather");
+                city.setText(jObj.getString("name"));
                 JSONObject weatherData = jArr.getJSONObject(0);
 
                 JSONObject mainObj = jObj.getJSONObject("main");
-                cond.setText(weatherData.getString("description"));
-                Log.i(MainActivity.ACTIVITY_TAG, weatherData.getString("description"));
-                Log.i(MainActivity.ACTIVITY_TAG, weatherData.getString("main"));
                 Double c = new Double(mainObj.getDouble("temp") - 273.15);
-                DecimalFormat df = new DecimalFormat("#.##");
+                
+                // FIXME: temperature range from openweathermap doesn't seem to work 
+                //Double temp_min = new Double(mainObj.getDouble("temp_min") - 273.15);
+                //Double temp_max = new Double(mainObj.getDouble("temp_max") - 273.15);
+
+                DecimalFormat df = new DecimalFormat("#.#");
+                cond.setText( 
+                        //df.format(temp_max).toString() + " - " + df.format(temp_min) + "\n" + 
+                        weatherData.getString("main") + "\n" + weatherData.getString("description") + "\n"
+                        + "Humidity: " + mainObj.getString("humidity") + " %"
+                );
+
                 String degree = df.format(c).toString();
                 temp.setText(degree + " °C");
                 Log.i(MainActivity.ACTIVITY_TAG, mainObj.getString("temp"));
@@ -114,18 +129,45 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    public void onClick(View v) {
+        Dialog d = createDialog();
+        d.show();
+    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+    private Dialog createDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View v = inflater.inflate(R.layout.city_dialog, null);
+        builder.setView(v);
+        final EditText edit = (EditText) v.findViewById(R.id.ptnEdit);
 
-        return super.onOptionsItemSelected(item);
+        // handle enter key
+        edit.setOnKeyListener(new OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    WeatherTask task = new WeatherTask();
+                    task.execute(new String[]{edit.getText().toString()});
+                    return true;
+                }
+                return false;
+            }
+        });
+        builder.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                WeatherTask task = new WeatherTask();
+                String city = edit.getText().toString();
+                task.execute(new String[]{city});
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        return builder.create();
     }
 }
