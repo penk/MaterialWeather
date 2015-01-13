@@ -102,7 +102,7 @@ public class MainActivity extends ActionBarActivity {
             try {
                 JSONObject jObj = new JSONObject(result);
                 JSONArray jArr = jObj.getJSONArray("weather");
-                city.setText(jObj.getString("name"));
+                city.setText(jObj.getString("name") + " ▼ ");
                 JSONObject weatherData = jArr.getJSONObject(0);
 
                 JSONObject mainObj = jObj.getJSONObject("main");
