@@ -1,7 +1,7 @@
 # MaterialWeather
 Simple weather app using OpenWeatherMap API
 
-![screenshot](http://i.imgur.com/9yUxgTu.png)
+![screenshot](http://i.imgur.com/1GqdYE5.png)
 
 Download: [MaterialWeather-1.1-debug.apk](https://github.com/penk/MaterialWeather/releases/download/v1.1/MaterialWeather-1.1-debug.apk) (0.92MB)
 
