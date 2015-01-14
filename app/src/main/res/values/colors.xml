@@ -3,6 +3,8 @@
     <color name="primaryColor_500">#03a9f4</color>
     <color name="primaryDarkColor_700">#0288d1</color>
 
+    <color name="pink">#e91e63</color>
+    <color name="pink_pressed">#ec407a</color>
 
     <color name="primary_indigo">#3f51b5</color>
     <color name="primary_blue">#5677fc</color>
